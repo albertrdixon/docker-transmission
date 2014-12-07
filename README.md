@@ -19,5 +19,13 @@ env vars:
   * `WATCH_DIR`:    watch for .torrent files, default=/torrents
 
 ```
-$ docker -d -p 9000:9000 -e RPC_PORT=9000 -e USERNAME=me -e PASSWORD=mypassword -v /storage/tv_shows:/downloads docker-start
+$ docker -d -p 9000:9000 -e RPC_PORT=9000 -e USERNAME=me -e PASSWORD=mypassword -v /storage/tv_shows:/downloads albertdixon/transmission docker-start
+```
+
+`TRANSMISSION_HOME` is set to /transmission
+
+If you want Transmission config and state to persist, then mount a volume to /transmission. If a `settings.json` is found in `$TRANSMISSION_HOME` then it will use that, otherwise it will copy over the `settings.json` from the container.
+
+```
+$ docker -d -e PASSWORD=1234 -v /path/to/transmission:/transmission -v /storage/tv_shows:/downloads albertdixon/transmission docker-start
 ```
