@@ -1,5 +1,7 @@
 # Docker - Transmission
 
+[![Docker Repository on Quay.io](https://quay.io/repository/albertrdixon/transmission/status "Docker Repository on Quay.io")](https://quay.io/repository/albertrdixon/transmission)
+
 A minimal debian based [Docker](http://www.docker.com) container running [Transmission](https://www.transmissionbt.com/).
 
 ## Repos
