@@ -2,24 +2,43 @@ FROM debian:jessie
 MAINTAINER Albert Dixon <albert@timelinelabs.com>
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV PATH /usr/local/bin:$PATH
-ENV TRANSMISSION_HOME /transmission
+ENV PATH /root/bin:$PATH
 
 RUN apt-get update -qq
-RUN apt-get install --no-install-recommends -y transmission-common \
-    transmission-daemon curl ca-certificates &&\
-    apt-get remove -y --purge $(dpkg --get-selections | egrep "\-dev:?" | cut -f1) &&\
-    apt-get autoclean -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get install --no-install-recommends -y unzip openvpn software-properties-common \
+    transmission-daemon gettext-base curl python3 &&\
+    # apt-get remove -y --purge $(dpkg --get-selections | egrep "\-dev:?" | cut -f1) &&\
+    apt-get autoremove -y && apt-get autoclean -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN bash -c "mkdir -p /transmission/{blocklists,resume,torrents}" &&\
-    mkdir -p /transmission/downloads /downloads
+RUN bash -c "mkdir -p /transmission/{blocklists,resume,torrents,downloads} /downloads"
 
-COPY configs/settings.json /
-COPY scripts/docker-start.sh /usr/local/bin/docker-start
-RUN chmod 0755 /usr/local/bin/docker-start &&\
-    chmod 0600 /settings.json &&\
+COPY configs/* /configs/
+COPY scripts/* /root/bin/
+RUN chmod 0755 /root/bin/* &&\
     echo "net.core.rmem_max = 4194304" >> /etc/sysctl.conf &&\
     echo "net.core.wmem_max = 1048576" >> /etc/sysctl.conf
 
+WORKDIR /
 CMD ["docker-start"]
 VOLUME ["/downloads"]
+EXPOSE 9091 51234
+
+ENV TRANSMISSION_HOME           /transmission
+ENV OPENVPN_GATEWAY             pia_ca_north
+ENV SPEED_LIMIT_DOWN            100
+ENV SPEED_LIMIT_DOWN_ENABLED    false
+ENV DOWNLOAD_DIR                /downloads
+ENV PEER_PORT                   51234
+ENV RPC_PORT                    9091
+ENV RPC_USERNAME                client
+ENV RPC_PASSWORD                client
+ENV RPC_AUTHENTICATION_REQUIRED true
+ENV WATCH_DIR                   /torrents
+ENV WATCH_DIR_ENABLED           false
+ENV SPEED_LIMIT_DOWN            100
+ENV SPEED_LIMIT_DOWN_ENABLED    false
+ENV SPEED_LIMIT_UP              3200
+ENV SPEED_LIMIT_UP_ENABLED      true
+ENV PEER_LIMIT_GLOBAL           1200
+ENV PEER_LIMIT_PER_TORRENT      180
+ENV MESSAGE_LEVEL               1
