@@ -44,8 +44,17 @@ function main {
   [ -d "$DOWNLOAD_DIR" ] || mkdir -p "$DOWNLOAD_DIR"
   [ -d /dev/net ] || mkdir -p /dev/net
   [ -c /dev/net/tun ] || mknod /dev/net/tun c 10 200
-  run_cmd "python3 -u /root/bin/pia_transmission_monitor"
+
+  if [[ "$1" =~ "bash" ]]; then
+    run_cmd "$@"
+  else
+    run_cmd "python3 -u /root/bin/pia_transmission_monitor"
+  fi
 }
 
-main
+if [[ "$1" =~ "clean" ]]; then
+  run_cmd "/bin/bash"
+else
+  main "$@"
+fi
 exit 0

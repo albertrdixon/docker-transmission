@@ -17,7 +17,7 @@ COPY scripts/* /root/bin/
 RUN chmod 0755 /root/bin/*
 
 WORKDIR /
-CMD ["docker-start"]
+ENTRYPOINT ["docker-start"]
 VOLUME ["/downloads"]
 EXPOSE 9091 51234
 
