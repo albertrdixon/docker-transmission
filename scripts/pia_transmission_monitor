@@ -38,7 +38,7 @@ def get_config():
     client_id:      PIA generated client_id (see port forwarding forum post)
     pia_url:        PIA port forwarding API URL
     transmission_rc file path to transmission-daemon settings.json
-    tun_dev:        name of tun/tap device (tun0)
+    tun_dev:        name of tun/tap device (tun)
     transmission_uid: uid of user to run the transmission daemon
     transmission_gid: gid of group to run the transmission daemon
     transmission_daemon: actual transmission command to run
@@ -46,7 +46,7 @@ def get_config():
     netrc:          Location of netrc file
     """
     conf = configparser.ConfigParser()
-    conf.read('/etc/pia_transmission_monitor/config.ini')
+    conf.read('/config/config.ini')
     with open(expanduser(conf.get('File_Paths', 'pia_credentials'))) as f:
         user, pw = filter(None, (line.rstrip() for line in f))
     with open(expanduser(conf.get('File_Paths', 'pia_client_id'))) as f:
@@ -61,9 +61,8 @@ def get_config():
                                "openvpn_gateway",
                                "transmission_uid",
                                "transmission_gid",
-                               "transmission",
-                               "transmission_args",
-                               "openvpn"])
+                               "transmission_command",
+                               "openvpn_command"])
     return c_nt(user,
                 pw,
                 client_id,
@@ -74,9 +73,8 @@ def get_config():
                 conf.get('Server', 'openvpn_gateway'),
                 conf.get('Server', 'transmission_uid'),
                 conf.get('Server', 'transmission_gid'),
-                conf.get('Server', 'transmission'),
-                conf.get('Server', 'transmission_args'),
-                conf.get('Server', 'openvpn'))
+                conf.get('Server', 'transmission_command'),
+                conf.get('Server', 'openvpn_command'))
 
 
 def ip_check(conf):
@@ -91,8 +89,8 @@ def ip_check(conf):
             ip = ip.split('inet')[1].split()[0]
             return ip
         except IndexError:
-            # If tun0 doesn't exist
-            print("IP for tun0 not available at {}".format(datetime.now()))
+            # If tun doesn't exist
+            print("IP for tun not available at {}".format(datetime.now()))
             sleep(5)
             count -= 1
     return False
@@ -141,10 +139,10 @@ def service_start_stop(name, status, conf):
     cmd = shlex.split(name)
     if status == "start":
         process = Popen(cmd, preexec_fn=_demote(uid, gid), stdout=PIPE)
-        print("Started {} at {}".format(name, datetime.now()))
+        print("Started {} at {}".format(cmd[0], datetime.now()))
     elif status == "stop":
         process = Popen(["pkill", "-f", cmd[0]], stdout=PIPE)
-        print("Stopped {} at {}".format(name, datetime.now()))
+        print("Stopped {} at {}".format(cmd[0], datetime.now()))
     process.wait()
 
 
@@ -162,18 +160,18 @@ def restart_vpn(conf):
     """Restarts openvpn and transmission. Updates the transmission bind address
     after openvpn restarts.
     """
-    service_start_stop(conf.transmission, "stop", conf)
+    service_start_stop(conf.transmission_command, "stop", conf)
     sleep(5)
     control = False
     while control is False:
         # Continue restarting openvpn until we have a good IP address
-        service_start_stop(conf.openvpn, "stop", conf)
+        service_start_stop(conf.openvpn_command, "stop", conf)
         sleep(5)
-        service_start_stop(conf.openvpn, "start", conf)
+        service_start_stop(conf.openvpn_command, "start", conf)
         sleep(10)
         control = bind_addr_update(conf)
         if control is True:
-            service_start_stop([conf.transmission, conf.transmission_args], "start", conf)
+            service_start_stop(conf.transmission_command, "start", conf)
             sleep(5)
 
 
