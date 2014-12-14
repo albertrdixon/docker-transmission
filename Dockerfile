@@ -7,8 +7,8 @@ ENV PATH /root/bin:$PATH
 RUN apt-get update -qq
 RUN apt-get install --no-install-recommends -y unzip openvpn software-properties-common \
     transmission-daemon gettext-base curl python3 anytun &&\
-    # apt-get remove -y --purge $(dpkg --get-selections | egrep "\-dev:?" | cut -f1) &&\
-    apt-get autoremove -y && apt-get autoclean -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    apt-get autoremove -y && apt-get autoclean -y &&\
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN bash -c "mkdir -p /config/{transmission,openvpn} /config/transmission/{blocklists,resume,torrents,downloads} /downloads"
 
