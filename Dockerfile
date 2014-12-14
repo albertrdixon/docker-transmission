@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM ubuntu:utopic
 MAINTAINER Albert Dixon <albert@timelinelabs.com>
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -6,24 +6,23 @@ ENV PATH /root/bin:$PATH
 
 RUN apt-get update -qq
 RUN apt-get install --no-install-recommends -y unzip openvpn software-properties-common \
-    transmission-daemon gettext-base curl python3 &&\
+    transmission-daemon gettext-base curl python3 anytun &&\
     # apt-get remove -y --purge $(dpkg --get-selections | egrep "\-dev:?" | cut -f1) &&\
     apt-get autoremove -y && apt-get autoclean -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN bash -c "mkdir -p /transmission/{blocklists,resume,torrents,downloads} /downloads"
+RUN bash -c "mkdir -p /config/{transmission,openvpn} /config/transmission/{blocklists,resume,torrents,downloads} /downloads"
 
-COPY configs/* /configs/
+COPY configs/* /templates/
 COPY scripts/* /root/bin/
-RUN chmod 0755 /root/bin/* &&\
-    echo "net.core.rmem_max = 4194304" >> /etc/sysctl.conf &&\
-    echo "net.core.wmem_max = 1048576" >> /etc/sysctl.conf
+RUN chmod 0755 /root/bin/*
 
 WORKDIR /
 CMD ["docker-start"]
 VOLUME ["/downloads"]
 EXPOSE 9091 51234
 
-ENV TRANSMISSION_HOME           /transmission
+ENV TRANSMISSION_HOME           /config/transmission
+ENV OPENVPN_HOME                /config/openvpn
 ENV OPENVPN_GATEWAY             pia_ca_north
 ENV SPEED_LIMIT_DOWN            100
 ENV SPEED_LIMIT_DOWN_ENABLED    false
