@@ -25,20 +25,20 @@ You must, at minimum:
 $ docker -d --cap-add=NET_ADMIN -e PIA_USER=username -e PIA_PASS=mypassword -v /storage/tv_shows:/downloads albertdixon/transmission docker-start
 ```
 
-`TRANSMISSION_HOME` is set to /transmission
+Transmission and Openvpn will set their home dirs - where all their configs and things will be - to `/config/transmission` and `/config/openvpn` respectively. So, if you want to persist things, just mount a local volume or data container volume to `/config` 
 
-If you want Transmission config and state to persist, then mount a volume to /transmission. If a `settings.json` is found in `$TRANSMISSION_HOME` then it will use that, otherwise it will copy over the `settings.json` from the container.
+You can also place custom config and openvpn files in the mounted volume and they will be respected. Transmission will look for `/config/transmission/settings.json` before creating it. Openvpn will look for `/config/openvpn/pia.ovpn` and `/config/openvpn/pia.crt` before creating / copying them.
 
 ```
-$ docker -d --cap-add=NET_ADMIN -e PASSWORD=1234 -v /path/to/transmission:/transmission -v /storage/tv_shows:/downloads albertdixon/transmission docker-start
+$ docker -d --cap-add=NET_ADMIN -e PIA_USER=username -e PIA_PASS=mypassword -v /path/to/transmission:/config -v /storage/tv_shows:/downloads albertdixon/transmission docker-start
 ```
 
 ## Env Vars
 
 | Var Name | Default Value | Description |
 |----------|---------------|-------------|
-| `PIA_USER` | none | Your PIA login |
-| `PIA_PASS` | none | Your PIA password |
+| `PIA_USER` | none | **REQUIRED** Your PIA login |
+| `PIA_PASS` | none | **REQUIRED** Your PIA password |
 | `DOWNLOAD_DIR` | /downloads | Default torrent download dir |
 | `MESSAGE_LEVEL` | 1 | Transmission message level. (0 = None, 1 = Error, 2 = Info, 3 = Debug, default = 2) |
 | `OPENVPN_GATEWAY` | pia_ca_north | PIA gateway server |
@@ -53,6 +53,5 @@ $ docker -d --cap-add=NET_ADMIN -e PASSWORD=1234 -v /path/to/transmission:/trans
 | `SPEED_LIMIT_DOWN_ENABLED` | false | Enable download speed limiting? |
 | `SPEED_LIMIT_UP` | 3200 | Upload speed limit |
 | `SPEED_LIMIT_UP_ENABLED` | true | Enable upload speed limiting? |
-| `TRANSMISSION_HOME` | /transmission | Transmission's home dir |
 | `WATCH_DIR` | /torrents | Directory to watch for .torrent files |
 | `WATCH_DIR_ENABLED` | false | Is watch dir enabled? |
