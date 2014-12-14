@@ -14,7 +14,8 @@ RUN bash -c "mkdir -p /config/{transmission,openvpn} /config/transmission/{block
 
 COPY configs/* /templates/
 COPY scripts/* /root/bin/
-RUN chmod 0755 /root/bin/*
+RUN chmod 755 /root/bin/docker-start &&\
+    chmod 755 /root/bin/pia_transmission_monitor
 
 WORKDIR /
 ENTRYPOINT ["docker-start"]
@@ -40,4 +41,4 @@ ENV SPEED_LIMIT_UP              3200
 ENV SPEED_LIMIT_UP_ENABLED      true
 ENV PEER_LIMIT_GLOBAL           1200
 ENV PEER_LIMIT_PER_TORRENT      180
-ENV MESSAGE_LEVEL               1
+ENV MESSAGE_LEVEL               2
