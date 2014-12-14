@@ -2,16 +2,15 @@
 pia_credentials = /pia.cred
 pia_client_id = /pia_client_id
 transmission_rc = ${TRANSMISSION_HOME}/settings.json
-netrc = ~/.netrc
+netrc = /root/.netrc
 
 [PIA]
 url = https://www.privateinternetaccess.com/vpninfo/port_forward_assignment
 
 [Server]
-tun_device = tun0
-transmission = transmission-daemon
+tun_device = tun
+transmission_command = transmission-daemon --logfile ${TRANSMISSION_HOME}/transmission.log
 transmission_uid = 0
 transmission_gid = 0
-transmission_args = '--logfile /dev/stdout'
-openvpn = openvpn
-openvpn_gateway = ${OPENVPN_GATEWAY} 
+openvpn_gateway = ${OPENVPN_GATEWAY}
+openvpn_command = openvpn --cd ${OPENVPN_HOME} --daemon ovpn-pia --config ${OPENVPN_HOME}/pia.ovpn --writepid /var/run/openvpn.pia.pid --status /var/run/openvpn.pia.status 10

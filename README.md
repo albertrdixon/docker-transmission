@@ -1,6 +1,10 @@
 # Docker - Transmission
 
-A minimal debian based [Docker](http://www.docker.com) container running [Transmission](https://www.transmissionbt.com/).
+A minimal debian based [Docker](http://www.docker.com) container running [Transmission](https://www.transmissionbt.com/) along with openvpn and [Private Internet Access](https://www.privateinternetaccess.com/).
+
+Shamelessly steals from the fabulous work done by [Scott Hansen](https://github.com/firecat53):
+* [Transmission container](https://github.com/firecat53/dockerfiles/tree/master/transmission)
+* [pia_transmission_monitor](https://github.com/firecat53/pia_transmission_monitor)
 
 ## Repos
 
@@ -10,16 +14,13 @@ A minimal debian based [Docker](http://www.docker.com) container running [Transm
 
 ## Usage
 
-env vars:
-  * `USERNAME`:     rpc_username, default=client
-  * `PASSWORD`:     rpc_password, default='' (blank)
-  * `RPC_PORT`:     rpc_port, default=9091
-  * `PEER_PORT`:    peer port, default=51413
-  * `DOWNLOAD_DIR`: completed torrents go here, default=/downloads
-  * `WATCH_DIR`:    watch for .torrent files, default=/torrents
+You must, at minimum:
+* Have a [Private Internet Access](https://www.privateinternetaccess.com/) account and provide your PIA username and password with the ENV vars `PIA_USER` and `PIA_PASS`.
+* Set a static IP for your container. I use other strategies, but feel free to alter the project to use [pipework](https://github.com/jpetazzo/pipework) or whatever new hotness strategy you desire.
+* Run your container with `--priviledged` or `--cap-add=NET_ADMIN`
 
 ```
-$ docker -d -p 9000:9000 -e RPC_PORT=9000 -e USERNAME=me -e PASSWORD=mypassword -v /storage/tv_shows:/downloads albertdixon/transmission docker-start
+$ docker -d --cap-add=NET_ADMIN -e PIA_USER=username -e PIA_PASS=mypassword -v /storage/tv_shows:/downloads albertdixon/transmission docker-start
 ```
 
 `TRANSMISSION_HOME` is set to /transmission
@@ -27,5 +28,29 @@ $ docker -d -p 9000:9000 -e RPC_PORT=9000 -e USERNAME=me -e PASSWORD=mypassword 
 If you want Transmission config and state to persist, then mount a volume to /transmission. If a `settings.json` is found in `$TRANSMISSION_HOME` then it will use that, otherwise it will copy over the `settings.json` from the container.
 
 ```
-$ docker -d -e PASSWORD=1234 -v /path/to/transmission:/transmission -v /storage/tv_shows:/downloads albertdixon/transmission docker-start
+$ docker -d --cap-add=NET_ADMIN -e PASSWORD=1234 -v /path/to/transmission:/transmission -v /storage/tv_shows:/downloads albertdixon/transmission docker-start
 ```
+
+## Env Vars
+
+| Var Name | Default Value | Description |
+|----------|---------------|-------------|
+| `PIA_USER` | none | Your PIA login |
+| `PIA_PASS` | none | Your PIA password |
+| `DOWNLOAD_DIR` | /downloads | Default torrent download dir |
+| `MESSAGE_LEVEL` | 1 | Transmission message level. (0 = None, 1 = Error, 2 = Info, 3 = Debug, default = 2) |
+| `OPENVPN_GATEWAY` | pia_ca_north | PIA gateway server |
+| `PEER_LIMIT_GLOBAL` | 1200 | Global peer limit |
+| `PEER_LIMIT_PER_TORRENT` | 180 | Peer limit per torrent |
+| `PEER_PORT` | 51234 | Peer port |
+| `RPC_AUTHENTICATION_REQUIRED` | true | Is authentication required? |
+| `RPC_PASSWORD` | client | Password for RPC connections |
+| `RPC_PORT` | 9091 | Transmission's RPC port |
+| `RPC_USERNAME` | client | Username for RPC connections |
+| `SPEED_LIMIT_DOWN` | 100 | Download speed limit |
+| `SPEED_LIMIT_DOWN_ENABLED` | false | Enable download speed limiting? |
+| `SPEED_LIMIT_UP` | 3200 | Upload speed limit |
+| `SPEED_LIMIT_UP_ENABLED` | true | Enable upload speed limiting? |
+| `TRANSMISSION_HOME` | /transmission | Transmission's home dir |
+| `WATCH_DIR` | /torrents | Directory to watch for .torrent files |
+| `WATCH_DIR_ENABLED` | false | Is watch dir enabled? |

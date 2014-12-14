@@ -9,15 +9,12 @@ function main {
   [ -n "$PIA_USER" ] || { echo "Please set PIA_USER to your PIA login"; exit 255; }
   [ -n "$PIA_PASS" ] || { echo "Please set PIA_PASS to your PIA password"; exit 255; }
 
+  [ -d "$TRANSMISSION_HOME" ] || mkdir -p "$TRANSMISSION_HOME"
+  [ -d "$OPENVPN_HOME" ] || mkdir -p "$OPENVPN_HOME"
   for dir in blocklists resume torrents downloads
   do
     [ -d "$TRANSMISSION_HOME/$dir" ] || mkdir -p "$TRANSMISSION_HOME/$dir"
   done
-
-  if [[ -n "$WATCH_DIR" ]]; then
-    [ -d "$WATCH_DIR" ] || mkdir -p "$WATCH_DIR"
-    export EXTRA_OPTS="-c $WATCH_DIR"
-  fi
 
   # Generate the PIA client_id
   head -n 100 /dev/urandom | md5sum | tr -d " -" > /pia_client_id
@@ -26,17 +23,23 @@ function main {
   mkdir -p /etc/pia_transmission_monitor
 
   # Generate the transmission monitor config from template and env vars
-  cat /configs/config.ini.tmpl | envsubst "$(cat /configs/config.ini.envsubst | tr '\n' ' ')" \
-      > /etc/pia_transmission_monitor/config.ini
+  cat /templates/config.ini.tmpl | envsubst "$(cat /templates/vars.envsubst | tr '\n' ' ')" \
+      > /config/config.ini
+
+  cat /templates/netrc.tmpl | envsubst "$(cat /templates/vars.envsubst | tr '\n' ' ')" \
+      > /root/.netrc
 
   # Generate transmission settings from template and env vars UNLESS already exists
   [ -f "$TRANSMISSION_HOME/settings.json" ] || {
-    cat /configs/settings.json.tmpl | envsubst "$(cat /configs/settings.json.envsubst | tr '\n' ' ')" \
+    cat /templates/settings.json.tmpl | envsubst "$(cat /templates/vars.envsubst | tr '\n' ' ')" \
         > "$TRANSMISSION_HOME/settings.json"
   }
 
   # Generate the PIA credentials file
-  echo -e "$PIA_PASS\n$PIA_USER" > /pia.cred
+  echo -e "$PIA_USER\n$PIA_PASS" > /pia.cred
+
+  [ -r "$OPENVPN_HOME/pia.ovpn" ] || mv templates/pia.ovpn "$OPENVPN_HOME/pia.ovpn"
+  [ -r "$OPENVPN_HOME/pia.crt" ] || mv templates/pia.crt "$OPENVPN_HOME/pia.crt"
 
   [ -d "$DOWNLOAD_DIR" ] || mkdir -p "$DOWNLOAD_DIR"
   [ -d /dev/net ] || mkdir -p /dev/net
