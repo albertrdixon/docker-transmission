@@ -48,7 +48,7 @@ function main {
   if [[ "$1" =~ "bash" ]]; then
     run_cmd "$@"
   else
-    run_cmd "python3 -u /root/bin/pia_transmission_monitor"
+    run_cmd "python3 -u /usr/local/bin/pia_transmission_monitor"
   fi
 }
 

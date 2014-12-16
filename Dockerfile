@@ -2,7 +2,6 @@ FROM ubuntu:utopic
 MAINTAINER Albert Dixon <albert@timelinelabs.com>
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV PATH /root/bin:$PATH
 
 RUN apt-get update -qq
 RUN apt-get install --no-install-recommends -y unzip openvpn software-properties-common \
@@ -13,15 +12,15 @@ RUN apt-get install --no-install-recommends -y unzip openvpn software-properties
 RUN bash -c "mkdir -p /config/{transmission,openvpn} /config/transmission/{blocklists,resume,torrents,downloads} /downloads"
 
 COPY configs/* /templates/
-COPY scripts/* /root/bin/
-RUN chmod 755 /root/bin/docker-start &&\
-    chmod 755 /root/bin/pia_transmission_monitor
+COPY scripts/* /usr/local/bin/
+RUN chmod a+rx /usr/local/bin/*
 
 WORKDIR /
 ENTRYPOINT ["docker-start"]
 VOLUME ["/downloads"]
 EXPOSE 9091 51234
 
+ENV PATH                        /usr/local/bin:$PATH
 ENV TRANSMISSION_HOME           /config/transmission
 ENV OPENVPN_HOME                /config/openvpn
 ENV OPENVPN_GATEWAY             pia_ca_north
