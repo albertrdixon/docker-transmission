@@ -9,6 +9,11 @@ RUN apt-get install --no-install-recommends -y unzip openvpn software-properties
     apt-get autoremove -y && apt-get autoclean -y &&\
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+ADD https://github.com/jpetazzo/pipework/archive/master.zip /pipework.zip
+RUN unzip pipework.zip && rm pipework.zip &&\
+    cp pipework-master/pipework /usr/local/bin/pipework &&\
+    chmod a+x /usr/local/bin/pipework
+
 RUN bash -c "mkdir -p /config/{transmission,openvpn} /config/transmission/{blocklists,resume,torrents,downloads} /downloads"
 
 COPY configs/* /templates/
