@@ -9,11 +9,6 @@ RUN apt-get install --no-install-recommends -y unzip openvpn software-properties
     apt-get autoremove -y && apt-get autoclean -y &&\
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-ADD https://github.com/jpetazzo/pipework/archive/master.zip /pipework.zip
-RUN unzip pipework.zip && rm pipework.zip &&\
-    cp pipework-master/pipework /usr/local/bin/pipework &&\
-    chmod a+x /usr/local/bin/pipework
-
 COPY configs/* /templates/
 COPY scripts/* /usr/local/bin/
 RUN chmod a+rx /usr/local/bin/*
