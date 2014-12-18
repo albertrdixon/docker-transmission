@@ -14,8 +14,6 @@ RUN unzip pipework.zip && rm pipework.zip &&\
     cp pipework-master/pipework /usr/local/bin/pipework &&\
     chmod a+x /usr/local/bin/pipework
 
-RUN bash -c "mkdir -p /config/{transmission,openvpn} /config/transmission/{blocklists,resume,torrents,downloads} /downloads"
-
 COPY configs/* /templates/
 COPY scripts/* /usr/local/bin/
 RUN chmod a+rx /usr/local/bin/*
@@ -26,8 +24,8 @@ VOLUME ["/downloads"]
 EXPOSE 9091 51234
 
 ENV PATH                        /usr/local/bin:$PATH
-ENV TRANSMISSION_HOME           /config/transmission
-ENV OPENVPN_HOME                /config/openvpn
+ENV TRANSMISSION_HOME           /transmission
+ENV OPENVPN_HOME                /transmission/openvpn
 ENV OPENVPN_GATEWAY             pia_ca_north
 ENV SPEED_LIMIT_DOWN            100
 ENV SPEED_LIMIT_DOWN_ENABLED    false

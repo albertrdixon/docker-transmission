@@ -24,7 +24,7 @@ function main {
 
   # Generate the transmission monitor config from template and env vars
   cat /templates/config.ini.tmpl | envsubst "$(cat /templates/vars.envsubst | tr '\n' ' ')" \
-      > /config/config.ini
+      > "$TRANSMISSION_HOME/config.ini"
 
   cat /templates/netrc.tmpl | envsubst "$(cat /templates/vars.envsubst | tr '\n' ' ')" \
       > /root/.netrc
