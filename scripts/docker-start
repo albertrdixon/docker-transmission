@@ -46,16 +46,12 @@ function main {
   [ -d /dev/net ] || mkdir -p /dev/net
   [ -c /dev/net/tun ] || mknod /dev/net/tun c 10 200
 
-  if [[ "$1" =~ "bash" ]]; then
-    run_cmd "$@"
-  else
-    run_cmd "python3 -u /usr/local/bin/pia_transmission_monitor"
-  fi
+  [ -n "$WITH_PIPEWORK" ] && pipework --wait
+  run_cmd "python3 -u /usr/local/bin/pia_transmission_monitor"
 }
 
-if [[ "$1" =~ "clean" ]]; then
-  [ -n "$WITH_PIPEWORK" ] && pipework --wait
-  run_cmd "/bin/bash"
+if [[ "$1" =~ "bash" ]]; then
+  run_cmd "$@"
 else
   main "$@"
 fi

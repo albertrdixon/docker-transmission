@@ -14,7 +14,7 @@ RUN unzip pipework.zip && rm pipework.zip &&\
     cp pipework-master/pipework /usr/local/bin/pipework &&\
     chmod a+x /usr/local/bin/pipework
 
-COPY configs/* /templates/
+COPY configs /templates
 COPY scripts/* /usr/local/bin/
 RUN chmod a+rx /usr/local/bin/*
 
