@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update -qq
 RUN apt-get install --no-install-recommends -y unzip openvpn software-properties-common \
-    transmission-daemon transmission-remote-cli gettext-base curl python3 anytun &&\
+    transmission-daemon transmission-remote-cli transmission-cli gettext-base curl python3 anytun &&\
     apt-get autoremove -y && apt-get autoclean -y &&\
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
