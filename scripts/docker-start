@@ -40,6 +40,7 @@ function main {
 
   [ -r "$OPENVPN_HOME/pia.ovpn" ] || mv templates/pia.ovpn "$OPENVPN_HOME/pia.ovpn"
   [ -r "$OPENVPN_HOME/pia.crt" ] || mv templates/pia.crt "$OPENVPN_HOME/pia.crt"
+  [ -r "$OPENVPN_HOME/pia.pem" ] || mv templates/pia.pem "$OPENVPN_HOME/pia.pem"
 
   [ -d "$DOWNLOAD_DIR" ] || mkdir -p "$DOWNLOAD_DIR"
   [ -d /dev/net ] || mkdir -p /dev/net
