@@ -18,7 +18,7 @@ Shamelessly steals from the fabulous work done by [Scott Hansen](https://github.
 
 You must, at minimum:
 * Have a [Private Internet Access](https://www.privateinternetaccess.com/) account and provide your PIA username and password with the ENV vars `PIA_USER` and `PIA_PASS`.
-* Set a static IP for your container. I use other strategies, but feel free to alter the project to use [pipework](https://github.com/jpetazzo/pipework) or whatever new hotness strategy you desire.
+* Set a static IP for your container. I use other strategies, but feel free to set `WITH_PIPEWORK` and use [pipework](https://github.com/jpetazzo/pipework) or whatever new hotness strategy you desire.
 * Run your container with `--priviledged` or `--cap-add=NET_ADMIN`
 
 ```
@@ -55,3 +55,4 @@ $ docker -d --cap-add=NET_ADMIN -e PIA_USER=username -e PIA_PASS=mypassword -v /
 | `SPEED_LIMIT_UP_ENABLED` | true | Enable upload speed limiting? |
 | `WATCH_DIR` | /torrents | Directory to watch for .torrent files |
 | `WATCH_DIR_ENABLED` | false | Is watch dir enabled? |
+| `WITH_PIPEWORK` | | Will wait for pipework if set |

@@ -54,6 +54,7 @@ function main {
 }
 
 if [[ "$1" =~ "clean" ]]; then
+  [ -n "$WITH_PIPEWORK" ] && pipework --wait
   run_cmd "/bin/bash"
 else
   main "$@"
