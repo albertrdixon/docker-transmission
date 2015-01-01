@@ -24,6 +24,7 @@ VOLUME ["/downloads"]
 EXPOSE 9091 51234
 
 ENV PATH                        /usr/local/bin:$PATH
+ENV LOGDIR                      /logs
 ENV TRANSMISSION_HOME           /transmission
 ENV OPENVPN_HOME                /transmission/openvpn
 ENV OPENVPN_GATEWAY             pia_ca_north

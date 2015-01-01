@@ -9,7 +9,7 @@ url = https://www.privateinternetaccess.com/vpninfo/port_forward_assignment
 
 [Server]
 tun_device = tun0
-transmission_command = transmission-daemon -r 0.0.0.0 --config-dir ${TRANSMISSION_HOME} --logfile ${TRANSMISSION_HOME}/transmission.log
+transmission_command = transmission-daemon -r 0.0.0.0 --config-dir ${TRANSMISSION_HOME} --logfile ${LOGDIR}/transmission.log
 transmission_uid = 0
 transmission_gid = 0
 openvpn_gateway = ${OPENVPN_GATEWAY}

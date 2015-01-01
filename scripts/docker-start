@@ -11,6 +11,7 @@ function main {
 
   [ -d "$TRANSMISSION_HOME" ] || mkdir -p "$TRANSMISSION_HOME"
   [ -d "$OPENVPN_HOME" ] || mkdir -p "$OPENVPN_HOME"
+  [ -d "$LOGDIR" ] || mkdir -p "$LOGDIR"
   for dir in blocklists resume torrents downloads
   do
     [ -d "$TRANSMISSION_HOME/$dir" ] || mkdir -p "$TRANSMISSION_HOME/$dir"
@@ -38,7 +39,10 @@ function main {
   # Generate the PIA credentials file
   echo -e "$PIA_USER\n$PIA_PASS" > /pia.cred
 
-  [ -r "$OPENVPN_HOME/pia.ovpn" ] || mv /templates/pia.ovpn "$OPENVPN_HOME/pia.ovpn"
+  [ -r "$OPENVPN_HOME/pia.ovpn" ] || {
+    cat /templates/pia.ovpn.tmpl | envsubst "$(cat /templates/vars.envsubst | tr '\n' ' ')" \
+        > "$OPENVPN_HOME/pia.ovpn"
+  }
   [ -r "$OPENVPN_HOME/pia.crt" ] || mv /templates/pia.crt "$OPENVPN_HOME/pia.crt"
   [ -r "$OPENVPN_HOME/pia.pem" ] || mv /templates/pia.pem "$OPENVPN_HOME/pia.pem"
 
