@@ -26,7 +26,9 @@ ENV PATH                        /usr/local/bin:$PATH
 ENV LOGDIR                      /logs
 ENV TRANSMISSION_HOME           /transmission
 ENV OPENVPN_HOME                /transmission/openvpn
-ENV OPENVPN_GATEWAY             ca-toronto.privateinternetaccess.com
+ENV OPENVPN_GATEWAY             162.253.129.98
+ENV OPENVPN_GATEWAY_PORT        1194
+ENV OPENVPN_PROTO               udp
 ENV SPEED_LIMIT_DOWN            100
 ENV SPEED_LIMIT_DOWN_ENABLED    false
 ENV DOWNLOAD_DIR                /downloads

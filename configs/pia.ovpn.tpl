@@ -1,7 +1,7 @@
 client
 dev tun
-proto tcp
-remote {{ OPENVPN_GATEWAY }} 443
+proto {{ OPENVPN_PROTO }}
+remote {{ OPENVPN_GATEWAY }} {{ OPENVPN_GATEWAY_PORT }}
 resolv-retry infinite
 nobind
 persist-key
