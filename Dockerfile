@@ -1,11 +1,11 @@
-FROM ubuntu:utopic
+FROM debian:jessie
 MAINTAINER Albert Dixon <albert@timelinelabs.com>
 
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update -qq
 RUN apt-get install --no-install-recommends -y unzip openvpn software-properties-common \
-    transmission-daemon transmission-remote-cli transmission-cli curl supervisor &&\
+    transmission-daemon transmission-remote-cli transmission-cli curl supervisor \
     python3 python python-dev python-pip build-essential &&\
     pip install envtpl &&\
     apt-get remove --purge -y build-essential python-dev &&\
