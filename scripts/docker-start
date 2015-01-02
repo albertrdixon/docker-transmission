@@ -7,7 +7,7 @@ function run_cmd {
 
 function main {
   local cmd="$1"
-  [ -z "$cmd" ] && cmd=/usr/bin/supervisor
+  [ -z "$cmd" ] && cmd="/usr/bin/supervisord"
   [ -n "$PIA_USER" ] || echo "Please set PIA_USER to your PIA login"
   [ -n "$PIA_PASS" ] || echo "Please set PIA_PASS to your PIA password"
 
