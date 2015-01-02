@@ -32,7 +32,7 @@ except ImportError:
 def get_config():
     """Parse config.ini. Return namedtuple of
     (user, pw, client_id, pia_url, transmission_rc, tun_dev, transmission_uid,
-    transmission_gid, transmission_daemon, openvpn_server, openvpn_gateway)
+    transmission_gid, transmission_command, openvpn_command)
     user:           PIA username
     pw:             PIA password
     client_id:      PIA generated client_id (see port forwarding forum post)
@@ -41,8 +41,7 @@ def get_config():
     tun_dev:        name of tun/tap device (tun)
     transmission_uid: uid of user to run the transmission daemon
     transmission_gid: gid of group to run the transmission daemon
-    transmission_daemon: actual transmission command to run
-    openvpn_gateway: name of openvpn configuration file to use
+    transmission_command: actual transmission command to run
     netrc:          Location of netrc file
     """
     conf = configparser.ConfigParser()
@@ -58,7 +57,6 @@ def get_config():
                                "transmission_rc",
                                "tun_dev",
                                "netrc",
-                               "openvpn_gateway",
                                "transmission_uid",
                                "transmission_gid",
                                "transmission_command",
@@ -70,7 +68,6 @@ def get_config():
                 expanduser(conf.get('File_Paths', 'transmission_rc')),
                 conf.get('Server', 'tun_device'),
                 expanduser(conf.get('File_Paths', 'netrc')),
-                conf.get('Server', 'openvpn_gateway'),
                 conf.get('Server', 'transmission_uid'),
                 conf.get('Server', 'transmission_gid'),
                 conf.get('Server', 'transmission_command'),
@@ -183,8 +180,7 @@ def port_update(conf):
         return False
     # Update the port and make sure port forwarding is set. Authentication from
     # netrc file
-    args = shlex.split("transmission-remote -p {} "
-                       "--netrc {} -m".format(port, conf.netrc))
+    args = shlex.split("transmission-remote --netrc {} -p {} -m".format(conf.netrc, port))
     Popen(args, stdout=PIPE).communicate()
     print("Updated port to {} at {}".format(port, datetime.now()))
 
@@ -194,6 +190,7 @@ def bind_addr_update(conf):
     be running.
     """
     ip = ip_check(conf)
+    port = port_check(conf)
     if ip is False:
         return False
     perms = os.stat(conf.transmission_rc)

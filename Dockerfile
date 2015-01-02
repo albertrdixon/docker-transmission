@@ -5,18 +5,17 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update -qq
 RUN apt-get install --no-install-recommends -y unzip openvpn software-properties-common \
-    transmission-daemon transmission-remote-cli transmission-cli gettext-base curl python3 anytun &&\
+    transmission-daemon transmission-remote-cli transmission-cli curl supervisor &&\
+    python3 python python-dev python-pip build-essential &&\
+    pip install envtpl &&\
+    apt-get remove --purge -y build-essential python-dev &&\
     apt-get autoremove -y && apt-get autoclean -y &&\
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-ADD https://github.com/jpetazzo/pipework/archive/master.zip /pipework.zip
-RUN unzip pipework.zip && rm pipework.zip &&\
-    cp pipework-master/pipework /usr/local/bin/pipework &&\
-    chmod a+x /usr/local/bin/pipework
 
 COPY configs /templates
 COPY scripts/* /usr/local/bin/
 RUN chmod a+rx /usr/local/bin/*
+RUN mkdir /downloads
 
 WORKDIR /
 ENTRYPOINT ["docker-start"]
@@ -27,7 +26,7 @@ ENV PATH                        /usr/local/bin:$PATH
 ENV LOGDIR                      /logs
 ENV TRANSMISSION_HOME           /transmission
 ENV OPENVPN_HOME                /transmission/openvpn
-ENV OPENVPN_GATEWAY             pia_ca_north
+ENV OPENVPN_GATEWAY             ca-toronto.privateinternetaccess.com
 ENV SPEED_LIMIT_DOWN            100
 ENV SPEED_LIMIT_DOWN_ENABLED    false
 ENV DOWNLOAD_DIR                /downloads

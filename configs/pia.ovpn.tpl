@@ -1,7 +1,7 @@
 client
 dev tun
-proto udp
-remote us-california.privateinternetaccess.com 1194
+proto tcp
+remote {{ OPENVPN_GATEWAY }} 443
 resolv-retry infinite
 nobind
 persist-key
@@ -13,6 +13,6 @@ auth-user-pass /pia.cred
 comp-lzo
 reneg-sec 0
 crl-verify pia.pem
-log ${LOGDIR}/ovpn-pia.log
+log ovpn-pia.log
 verb 4
 mute 5
