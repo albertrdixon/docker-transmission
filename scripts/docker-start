@@ -29,7 +29,7 @@ function main {
   envtpl --keep-template -o /etc/supervisor/conf.d/supervisord.conf /templates/supervisord.conf.tpl
   envtpl --keep-template -o "$TRANSMISSION_HOME/config.ini" /templates/config.ini.tpl
   envtpl --keep-template -o "$TRANSMISSION_HOME/settings.json" /templates/settings.json.tpl
-  envtpl --keep-template -o "$OPENVPN_HOME/pia.ovpn.tpl" /templates/pia.ovpn.tpl
+  envtpl --keep-template -o "$OPENVPN_HOME/pia.ovpn" /templates/pia.ovpn.tpl
   envtpl --keep-template -o /root/.netrc /templates/netrc.tpl
 
   # Generate the PIA credentials file
