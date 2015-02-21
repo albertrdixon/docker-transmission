@@ -1,3 +1,3 @@
 machine localhost
-  login {{ RPC_USERNAME }}
-  password {{ RPC_PASSWORD }}
+  login {{ .Env.RPC_USERNAME }}
+  password {{ .Env.RPC_PASSWORD }}

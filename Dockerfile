@@ -3,25 +3,27 @@ MAINTAINER Albert Dixon <albert@timelinelabs.com>
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update -qq
-RUN apt-get install --no-install-recommends -y unzip openvpn software-properties-common \
-    transmission-daemon transmission-remote-cli transmission-cli curl supervisor \
-    python3 python python-dev python-pip build-essential &&\
-    pip install envtpl &&\
-    apt-get remove --purge -y build-essential python-dev &&\
-    apt-get autoremove -y && apt-get autoclean -y &&\
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get update
+RUN apt-get install --no-install-recommends -y --force-yes \
+    unar openvpn transmission-daemon transmission-remote-cli \
+    transmission-cli curl supervisor python3
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN curl -#kL https://github.com/jwilder/dockerize/releases/download/v0.0.2/dockerize-linux-amd64-v0.0.2.tar.gz |\
+    tar xvz -C /usr/local/bin
 
 COPY configs /templates
 COPY scripts/* /usr/local/bin/
 RUN chmod a+rx /usr/local/bin/*
-RUN mkdir /downloads
+RUN bash -c "mkdir /downloads /etc/pia_transmission_monitor" &&\
+    bash -c "mkdir -p /transmission/{blocklists,resume,torrents,downloads,openvpn}"
 
 WORKDIR /
-ENTRYPOINT ["docker-start"]
+ENTRYPOINT ["docker-entry"]
 VOLUME ["/downloads"]
-EXPOSE 9091 51234
+EXPOSE 9091
 
+ENV SUPERVISOR_LOG_LEVEL        INFO
 ENV PATH                        /usr/local/bin:$PATH
 ENV LOGDIR                      /logs
 ENV TRANSMISSION_HOME           /transmission

@@ -1,50 +1,6 @@
 #!/bin/bash
 set -eo pipefail
 trap "exit 0" 2 15
-function run_cmd {
-  exec $*
-}
 
-function main {
-  local cmd="$@"
-  [ -z "$cmd" ] && cmd="/usr/bin/supervisord"
-  [ -n "$PIA_USER" ] || echo "Please set PIA_USER to your PIA login"
-  [ -n "$PIA_PASS" ] || echo "Please set PIA_PASS to your PIA password"
-
-  [ -d "$TRANSMISSION_HOME" ] || mkdir -p "$TRANSMISSION_HOME"
-  [ -d "$OPENVPN_HOME" ] || mkdir -p "$OPENVPN_HOME"
-  [ -d "$LOGDIR" ] || mkdir -p "$LOGDIR"
-  for dir in blocklists resume torrents downloads
-  do
-    [ -d "$TRANSMISSION_HOME/$dir" ] || mkdir -p "$TRANSMISSION_HOME/$dir"
-  done
-
-  # Generate the PIA client_id
-  head -n 100 /dev/urandom | md5sum | tr -d " -" > /pia_client_id
-
-  # Make the transmission monitor config dir
-  mkdir -p /etc/pia_transmission_monitor
-
-  # Generate the transmission monitor config from template and env vars
-  envtpl --keep-template -o /etc/supervisor/conf.d/supervisord.conf /templates/supervisord.conf.tpl
-  envtpl --keep-template -o "$TRANSMISSION_HOME/config.ini" /templates/config.ini.tpl
-  envtpl --keep-template -o "$TRANSMISSION_HOME/settings.json" /templates/settings.json.tpl
-  envtpl --keep-template -o "$OPENVPN_HOME/pia.ovpn" /templates/pia.ovpn.tpl
-  envtpl --keep-template -o /root/.netrc /templates/netrc.tpl
-
-  # Generate the PIA credentials file
-  echo -e "$PIA_USER\n$PIA_PASS" > /pia.cred
-
-  [ -r "$OPENVPN_HOME/pia.crt" ] || mv /templates/pia.crt "$OPENVPN_HOME/pia.crt"
-  [ -r "$OPENVPN_HOME/pia.pem" ] || mv /templates/pia.pem "$OPENVPN_HOME/pia.pem"
-
-  [ -d "$DOWNLOAD_DIR" ] || mkdir -p "$DOWNLOAD_DIR"
-  [ -d /dev/net ] || mkdir -p /dev/net
-  [ -c /dev/net/tun ] || mknod /dev/net/tun c 10 200
-
-  ulimit -n 32768
-  run_cmd "$cmd"
-}
-
-main "$@"
+exec "/usr/bin/supervisord" "-c" "/etc/supervisor/supervisord.conf"
 exit 0

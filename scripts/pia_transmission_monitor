@@ -47,9 +47,9 @@ def get_config():
     conf = configparser.ConfigParser()
     conf.read(os.getenv('TRANSMISSION_HOME', '/config') + '/config.ini')
     with open(expanduser(conf.get('File_Paths', 'pia_credentials'))) as f:
-        user, pw = filter(None, (line.rstrip() for line in f))
+        user, pw = [line.rstrip() for line in f if line]
     with open(expanduser(conf.get('File_Paths', 'pia_client_id'))) as f:
-        client_id = filter(None, (line.rstrip() for line in f))
+        client_id = [line.rstrip() for line in f if line]
     c_nt = namedtuple("c_nt", ["user",
                                "pw",
                                "client_id",
@@ -63,7 +63,7 @@ def get_config():
                                "openvpn_command"])
     return c_nt(user,
                 pw,
-                client_id,
+                client_id[0],
                 conf.get('PIA', 'url'),
                 expanduser(conf.get('File_Paths', 'transmission_rc')),
                 conf.get('Server', 'tun_device'),
@@ -183,6 +183,10 @@ def port_update(conf):
     args = shlex.split("transmission-remote --netrc {} -p {} -m".format(conf.netrc, port))
     Popen(args, stdout=PIPE).communicate()
     print("Updated port to {} at {}".format(port, datetime.now()))
+    # print("Testing port {} at {}".format(port, datetime.now()))
+    # args = shlex.split("transmission-remote --netrc {} -pt".format(conf.netrc))
+    # Popen(args, stdout=PIPE).communicate()
+
 
 
 def bind_addr_update(conf):
@@ -214,7 +218,7 @@ def hourly():
     """Thread to count 10 min
        Sleep 10 min. The call to the PIA API should be at least once per hour.
     """
-    sleep(600)
+    sleep(1800)
 
 
 def check_running(conf):

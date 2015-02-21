@@ -1,7 +1,7 @@
 client
 dev tun
-proto {{ OPENVPN_PROTO }}
-remote {{ OPENVPN_GATEWAY }} {{ OPENVPN_GATEWAY_PORT }}
+proto {{ .Env.OPENVPN_PROTO }}
+remote {{ .Env.OPENVPN_GATEWAY }} {{ .Env.OPENVPN_GATEWAY_PORT }}
 resolv-retry infinite
 nobind
 persist-key
