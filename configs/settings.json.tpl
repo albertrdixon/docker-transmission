@@ -51,7 +51,7 @@
     "rpc-whitelist-enabled": true,
     "scrape-paused-torrents-enabled": true,
     "script-torrent-done-enabled": false,
-    "script-torrent-done-filename": "",
+    "script-torrent-done-filename": "/usr/local/bin/completed.sh",
     "seed-queue-enabled": {{ .Env.SEED_QUEUE_ENABLED }},
     "seed-queue-size": {{ .Env.SEED_QUEUE_SIZE }},
     "speed-limit-down": {{ .Env.SPEED_LIMIT_DOWN }},
