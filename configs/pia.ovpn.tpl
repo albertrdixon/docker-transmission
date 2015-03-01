@@ -13,6 +13,6 @@ auth-user-pass /pia.cred
 comp-lzo
 reneg-sec 0
 crl-verify pia.pem
-log ovpn-pia.log
-verb 4
-mute 5
+log {{ .Env.OPENVPN_LOG }}
+verb {{ .Env.OPENVPN_VERB }}
+mute 10

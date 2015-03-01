@@ -28,9 +28,12 @@ ENV PATH                        /usr/local/bin:$PATH
 ENV LOGDIR                      /logs
 ENV TRANSMISSION_HOME           /transmission
 ENV OPENVPN_HOME                /transmission/openvpn
+ENV TRANSMISSION_LOG            /dev/stderr
+ENV OPENVPN_LOG                 /dev/stderr
 ENV OPENVPN_GATEWAY             162.253.129.98
 ENV OPENVPN_GATEWAY_PORT        1194
 ENV OPENVPN_PROTO               udp
+ENV OPENVPN_VERB                3
 ENV DOWNLOAD_DIR                /downloads
 ENV PEER_PORT                   51234
 ENV RPC_PORT                    9091
