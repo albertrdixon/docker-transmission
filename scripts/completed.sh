@@ -1,5 +1,6 @@
 #!/bin/bash
 set -eo pipefail
+exec >/dev/stderr
 
 NETRC=/root/.netrc
 

@@ -50,7 +50,7 @@
     "rpc-whitelist": "127.0.0.1,192.168.*.*,10.*.*.*,172.*.*.*",
     "rpc-whitelist-enabled": true,
     "scrape-paused-torrents-enabled": true,
-    "script-torrent-done-enabled": false,
+    "script-torrent-done-enabled": {{ .Env.COMPLETED_SCRIPT_ENABLED }},
     "script-torrent-done-filename": "/usr/local/bin/completed.sh",
     "seed-queue-enabled": {{ .Env.SEED_QUEUE_ENABLED }},
     "seed-queue-size": {{ .Env.SEED_QUEUE_SIZE }},
