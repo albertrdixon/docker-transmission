@@ -14,7 +14,7 @@ RUN dpkg-reconfigure locales && \
     /usr/sbin/update-locale LANG=C.UTF-8
 
 ADD requirements.txt requirements.txt
-RUN venv/bin/pip install -r requirements.txt && rm requirements.txt
+RUN pip install -r requirements.txt && rm requirements.txt
 
 RUN curl -#kL https://github.com/albertrdixon/tmplnator/releases/download/v2.1.0/tnator-linux-amd64.tar.gz |\
     tar xvz -C /usr/local/bin
