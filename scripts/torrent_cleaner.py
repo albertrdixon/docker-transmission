@@ -75,7 +75,7 @@ class TorrentCleanerThread(Thread):
                 t["strikes"] += 1
                 t["reason"] = "stalled (Stalled: {}, Status: {})".format(torrent.isStalled, torrent.status)
               self.torrents[torrent.id] = t
-              if t["strikes"] >= 2:
+              if t["strikes"] >= 3:
                 self.log.info("Torrent #{} ('{}') being removed because it is {}".format(torrent.id, torrent.name, t["reason"]))
                 self.client.remove_torrent(torrent.id, delete_data=True)
                 self.torrents.pop(torrent.id, None)
