@@ -1,0 +1,33 @@
+{{ path "/etc" }}[unix_http_server]
+file  = /supervisor.sock
+chmod = 0777
+
+[supervisord]
+nodaemon         = true
+user             = root
+loglevel         = {{ default .Env.SUPERVISOR_LOG_LEVEL "INFO" }}
+logfile          = /dev/stderr
+logfile_maxbytes = 0
+
+[rpcinterface:supervisor]
+supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+
+[supervisorctl]
+serverurl = unix:///supervisor.sock
+
+[program:pia]
+command                 = python -u /usr/local/bin/pia_transmission_monitor.py
+autostart               = true
+stdout_logfile          = /dev/stdout
+stdout_logfile_maxbytes = 0
+stderr_logfile          = /dev/stderr
+stderr_logfile_maxbytes = 0
+
+{{ if eq .Env.ENABLE_CLEANER "true" }}
+[program:cleaner]
+command                 = python -u /usr/local/bin/torrent_cleaner.py -H 127.0.0.1 -p {{ .Env.RPC_PORT }} -f {{ .Env.CLEAN_FREQUENCY }} -r {{ .Env.RATIO_LIMIT }}
+stdout_logfile          = /dev/stderr
+stdout_logfile_maxbytes = 0
+stderr_logfile          = /dev/stderr
+stderr_logfile_maxbytes = 0
+{{ end }}

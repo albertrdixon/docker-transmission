@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import ast
 import fileinput
 import os
@@ -106,12 +105,16 @@ def port_check(conf):
     data = urlencode(data)
     count = 5
     while count:
-        req = Request(conf.pia_url, data.encode())
-        out = urlopen(req).read().decode()
         try:
+            req = Request(conf.pia_url, data.encode())
+            out = urlopen(req).read().decode()
             port = ast.literal_eval(out)["port"]
         except KeyError:
+            print("Key 'port' not found in response: {}".format(out))
             port = False
+        except URLError as e:
+            port = False
+            print("Failed to open PIA port url: [{}] {}".format(type(e), e))
         finally:
             if port:
                 return port
@@ -186,7 +189,6 @@ def port_update(conf):
     # print("Testing port {} at {}".format(port, datetime.now()))
     # args = shlex.split("transmission-remote --netrc {} -pt".format(conf.netrc))
     # Popen(args, stdout=PIPE).communicate()
-
 
 
 def bind_addr_update(conf):
