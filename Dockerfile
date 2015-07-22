@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update
 RUN apt-get install --no-install-recommends -y --force-yes \
     openvpn transmission-daemon transmission-remote-cli \
-    transmission-cli curl locales python supervisor \
+    transmission-cli curl locales python supervisor ca-certificates \
     && curl -#kL https://bootstrap.pypa.io/get-pip.py | python
 
 RUN dpkg-reconfigure locales && \
