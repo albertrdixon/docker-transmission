@@ -16,8 +16,9 @@ RUN dpkg-reconfigure locales && \
 ADD requirements.txt requirements.txt
 RUN pip install -r requirements.txt && rm requirements.txt
 
-RUN curl -#kL https://github.com/albertrdixon/tmplnator/releases/download/v2.1.0/tnator-linux-amd64.tar.gz |\
-    tar xvz -C /usr/local/bin
+RUN curl -#kL https://github.com/albertrdixon/tmplnator/releases/download/v2.2.0/t2-linux.tgz |\
+    tar xvz -C /usr/local \
+    && ln -sv /usr/local/bin/t2-linux /usr/local/bin/t2
 
 RUN apt-get autoremove -y && apt-get autoclean -y &&\
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
