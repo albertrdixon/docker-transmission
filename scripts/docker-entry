@@ -9,9 +9,6 @@ echo "**** Starting Transmission (https://www.transmissionbt.com/) container. En
 # Generate the transmission monitor config from template and env vars
 t2 /templates
 
-# Generate the PIA client_id
-head -n 100 /dev/urandom | md5sum | tr -d " -" > /pia_client_id
-
 [ -d /dev/net ] || mkdir -p /dev/net
 [ -c /dev/net/tun ] || mknod /dev/net/tun c 10 200
 
