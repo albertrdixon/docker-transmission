@@ -1,27 +1,20 @@
-FROM debian:jessie
+FROM alpine:3.2
 MAINTAINER Albert Dixon <albert.dixon@schange.com>
 
-ENV DEBIAN_FRONTEND noninteractive
+RUN echo "http://dl-4.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
+    && echo "http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
+    && apk update
+RUN apk add bash openvpn transmission-daemon transmission-cli \
+    supervisor py-six ca-certificates
+ADD https://bootstrap.pypa.io/get-pip.py /gp.py
+RUN python /gp.py \
+    && rm -f /gp.py \
+    && pip install -U transmissionrpc>=0.11
 
-RUN apt-get update
-RUN apt-get install --no-install-recommends -y --force-yes \
-    openvpn transmission-daemon transmission-remote-cli \
-    transmission-cli curl locales python supervisor ca-certificates \
-    && curl -#kL https://bootstrap.pypa.io/get-pip.py | python
-
-RUN dpkg-reconfigure locales && \
-    locale-gen C.UTF-8 && \
-    /usr/sbin/update-locale LANG=C.UTF-8
-
-ADD requirements.txt requirements.txt
-RUN pip install -r requirements.txt && rm requirements.txt
-
-RUN curl -#kL https://github.com/albertrdixon/tmplnator/releases/download/v2.2.0/t2-linux.tgz |\
-    tar xvz -C /usr/local \
-    && ln -sv /usr/local/bin/t2-linux /usr/local/bin/t2
-
-RUN apt-get autoremove -y && apt-get autoclean -y &&\
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+ADD https://github.com/albertrdixon/tmplnator/releases/download/v2.2.0/t2-linux.tgz /t2.tgz
+RUN tar xvzf /t2.tgz -C /usr/local \
+    && ln -s /usr/local/bin/t2-linux /usr/local/bin/t2 \
+    && rm -f /t2.tgz
 
 ADD bashrc      /root/.bashrc
 ADD configs     /templates
