@@ -5,8 +5,7 @@ RUN echo "http://dl-4.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories
     && echo "http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
     && apk update
 RUN apk add bash openvpn transmission-daemon transmission-cli \
-    faenza-icon-theme-transmission supervisor py-six \
-    ca-certificates
+    supervisor py-six ca-certificates
 ADD https://bootstrap.pypa.io/get-pip.py /gp.py
 RUN python /gp.py \
     && rm -f /gp.py \
