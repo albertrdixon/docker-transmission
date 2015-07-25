@@ -18,7 +18,7 @@ RUN tar xvzf /t2.tgz -C /usr/local \
 
 ADD bashrc      /root/.bashrc
 ADD configs     /templates
-ADD ssl         /ssl
+ADD certs         /certs
 ADD scripts/*   /usr/local/bin/
 RUN chmod a+rx  /usr/local/bin/*
 RUN bash -c "mkdir -p /downloads/{movies,tv_shows} /etc/pia_transmission_monitor" &&\

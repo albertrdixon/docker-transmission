@@ -2,7 +2,7 @@
 
 [![Docker Repository on Quay.io](https://quay.io/repository/albertrdixon/transmission/status "Docker Repository on Quay.io")](https://quay.io/repository/albertrdixon/transmission)
 
-A minimal debian based [Docker](http://www.docker.com) container running [Transmission](https://www.transmissionbt.com/) along with openvpn and [Private Internet Access](https://www.privateinternetaccess.com/).
+Just a small [Docker](http://www.docker.com) container running [Transmission](https://www.transmissionbt.com/) along with openvpn and [Private Internet Access](https://www.privateinternetaccess.com/).
 
 Shamelessly steals from the fabulous work done by [Scott Hansen](https://github.com/firecat53):
 * [Transmission container](https://github.com/firecat53/dockerfiles/tree/master/transmission)
@@ -24,9 +24,9 @@ You must, at minimum:
 $ docker -d --cap-add=NET_ADMIN -e PIA_USER=username -e PIA_PASS=mypassword -v /storage/tv_shows:/downloads albertdixon/transmission docker-start
 ```
 
-Transmission and Openvpn will set their home dirs - where all their configs and things will be - to `/config/transmission` and `/config/openvpn` respectively. So, if you want to persist things, just mount a local volume or data container volume to `/config` 
+Transmission and Openvpn will set their home dirs - where all their configs and things will be - to `/transmission` and `/transmission/openvpn` respectively. So, if you want to persist things, just mount a local volume or data container volume to `/transmission` 
 
-You can also place custom config and openvpn files in the mounted volume and they will be respected. Transmission will look for `/config/transmission/settings.json` before creating it. Openvpn will look for `/config/openvpn/pia.ovpn` and `/config/openvpn/pia.crt` before creating / copying them.
+You can also place custom config and openvpn files in the mounted volume and they will be respected. Transmission will look for `/transmission/settings.json` before creating it. Openvpn will look for `/transmission/openvpn/pia.ovpn` and `/transmission/openvpn/pia.crt` before creating / copying them.
 
 ```
 $ docker -d --cap-add=NET_ADMIN -e PIA_USER=username -e PIA_PASS=mypassword -v /path/to/transmission:/config -v /storage/tv_shows:/downloads albertdixon/transmission docker-start

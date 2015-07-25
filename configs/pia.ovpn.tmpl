@@ -6,14 +6,14 @@ resolv-retry infinite
 nobind
 persist-key
 persist-tun
-ca /ssl/pia.crt
+ca /certs/pia.crt
 tls-client
 remote-cert-tls server
 auth-user-pass /pia.cred
 comp-lzo
 reneg-sec 0
-crl-verify /ssl/pia.pem
+crl-verify /certs/pia.pem
 log {{ .Env.OPENVPN_LOG }}
 verb {{ .Env.OPENVPN_VERB }}
 mute {{ .Env.OPENVPN_MUTE }}
-{{ path .Env.OPENVPN_HOME }}
+{{ path "/" }}
