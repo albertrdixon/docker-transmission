@@ -1,6 +1,5 @@
-{{ path "/etc" }}[unix_http_server]
-file  = /supervisor.sock
-chmod = 0777
+{{ path "/etc" }}[inet_http_server]
+port=127.0.0.1:9090
 
 [supervisord]
 nodaemon         = true
@@ -11,7 +10,8 @@ loglevel         = {{ def .Env.SUPERVISOR_LOG_LEVEL "INFO" }}
 supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
 
 [supervisorctl]
-serverurl = unix:///supervisor.sock
+serverurl = http://127.0.0.1:9090
+prompt    = sctl
 
 [program:pia]
 command                 = python -u /usr/local/bin/pia_transmission_monitor.py
