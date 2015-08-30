@@ -29,7 +29,7 @@ Transmission and Openvpn will set their home dirs - where all their configs and 
 You can also place custom config and openvpn files in the mounted volume and they will be respected. Transmission will look for `/transmission/settings.json` before creating it. Openvpn will look for `/transmission/openvpn/pia.ovpn` and `/transmission/openvpn/pia.crt` before creating / copying them.
 
 ```
-$ docker -d --cap-add=NET_ADMIN -e PIA_USER=username -e PIA_PASS=mypassword -v /path/to/transmission:/config -v /storage/tv_shows:/downloads albertdixon/transmission docker-start
+$ docker -d --cap-add=NET_ADMIN -e PIA_USER=username -e PIA_PASS=mypassword -v /path/to/transmission:/transmission -v /storage/tv_shows:/downloads albertdixon/transmission docker-start
 ```
 
 ## Env Vars
@@ -38,19 +38,47 @@ $ docker -d --cap-add=NET_ADMIN -e PIA_USER=username -e PIA_PASS=mypassword -v /
 |----------|---------------|-------------|
 | `PIA_USER` | none | **REQUIRED** Your PIA login |
 | `PIA_PASS` | none | **REQUIRED** Your PIA password |
-| `DOWNLOAD_DIR` | /downloads | Default torrent download dir |
-| `MESSAGE_LEVEL` | 1 | Transmission message level. (0 = None, 1 = Error, 2 = Info, 3 = Debug, default = 2) |
-| `OPENVPN_GATEWAY` | pia_ca_north | PIA gateway server |
-| `PEER_LIMIT_GLOBAL` | 1200 | Global peer limit |
-| `PEER_LIMIT_PER_TORRENT` | 180 | Peer limit per torrent |
-| `PEER_PORT` | 51234 | Peer port |
-| `RPC_AUTHENTICATION_REQUIRED` | true | Is authentication required? |
-| `RPC_PASSWORD` | client | Password for RPC connections |
-| `RPC_PORT` | 9091 | Transmission's RPC port |
-| `RPC_USERNAME` | client | Username for RPC connections |
-| `SPEED_LIMIT_DOWN` | 100 | Download speed limit |
-| `SPEED_LIMIT_DOWN_ENABLED` | false | Enable download speed limiting? |
-| `SPEED_LIMIT_UP` | 3200 | Upload speed limit |
-| `SPEED_LIMIT_UP_ENABLED` | true | Enable upload speed limiting? |
-| `WATCH_DIR` | /torrents | Directory to watch for .torrent files |
-| `WATCH_DIR_ENABLED` | false | Is watch dir enabled? |
+| | |
+| `CACHE_SIZE` | 50 | transmission cahce size in MB |
+| `CLEAN_FREQUENCY` | 1800 | time in seconds between runs of torrent_cleaner.py |
+| `COMPLETED_SCRIPT` | /usr/local/bin/completed.sh | script to run after torrent completed |
+| `COMPLETED_SCRIPT_ENABLED` | false | enable a script to run on torrent completion |
+| `CONGESTION` | lp | use this congestion algorithm. Set to '' to use none |
+| `DOWNLOAD_DIR` | /downloads | default download directory |
+| `DOWNLOAD_QUEUE_ENABLED` | true | enable download queue? |
+| `DOWNLOAD_QUEUE_SIZE` | 3 | size of download queue |
+| `ENABLE_CLEANER` | true | enable torrent_cleaner.py? |
+| `MESSAGE_LEVEL` | 1 | Transmission message level. (0: None, 1: Error, 2: Info, 3: Debug) |
+| `OPEN_FILE_LIMIT` | 32768 | open file limit. Make sure you have done appropriate tuning in your host kernel. |
+| `OPENVPN_GATEWAY` | ca-toronto.privateinternetaccess.com | PIA gateway server. This should be one with port forwarding enabled. [More information](https://www.privateinternetaccess.com/pages/client-support/) |
+| `OPENVPN_GATEWAY_PORT` | 1194 | openvpn port. [More information](https://www.privateinternetaccess.com/pages/client-support/) |
+| `OPENVPN_HOME` | /transmission/openvpn | openvpn home directory |
+| `OPENVPN_LOG` | /dev/stderr | openvpn writes logs here |
+| `OPENVPN_MUTE` | 20 | openvpn will suppress duplicate messages. |
+| `OPENVPN_PROTO` | udp | openvpn protocol. [More information](https://www.privateinternetaccess.com/pages/client-support/) |
+| `OPENVPN_VERB` | 3 | openvpn logging verbosity. [More information](https://openvpn.net/index.php/open-source/documentation/manuals/65-openvpn-20x-manpage.html) |
+| `PATH` | /usr/local/bin:$PATH | obvious... |
+| `PEER_LIMIT_GLOBAL` | 1200 | global peer limit |
+| `PEER_LIMIT_PER_TORRENT` | 180 | peer limit per torrent |
+| `PEER_PORT` | 51234 | initial peer port. This gets automatically updated by pia_transmission_monitor.py |
+| `QUEUE_STALLED_ENABLED` | true | enable stalled torrent queue? |
+| `QUEUE_STALLED_MINUTES` | 5 | place torrent in stalled queue if inactive for this many minutes |
+| `RATIO_LIMIT` | 1 | default ratio |
+| `RATIO_LIMIT_ENABLED` | true | seed until torrent has reached the ratio limit? |
+| `RPC_AUTHENTICATION_REQUIRED` | false | require RPC authentication? |
+| `RPC_PASSWORD` | client | RPC password |
+| `RPC_PORT` | 9091 | RPC port. If you change this make sure you expose the port. |
+| `RPC_USERNAME` | client | RPC password |
+| `SEED_QUEUE_ENABLED` | true | enable queue for seeding torrents |
+| `SEED_QUEUE_SIZE` | 2 | seed queue size |
+| `SPEED_LIMIT_DOWN` | 5000 | download speed limit  |
+| `SPEED_LIMIT_DOWN_ENABLED` | false | enable download speed limit? |
+| `SPEED_LIMIT_UP` | 400 | upload speed limit |
+| `SPEED_LIMIT_UP_ENABLED` | true | enable upload speed limit? |
+| `SUPERVISOR_LOG_LEVEL` | INFO | log level for supervisord |
+| `TRANSMISSION_HOME` | /transmission | transmission home dir |
+| `TRANSMISSION_LOG` | /dev/stderr | |
+| `TRANSMISSION_WEB_HOME` | /web | custom transmission web interface. Attach your preferred one to this location (default is [transmission-web-control](https://github.com/ronggang/transmission-web-control)). Set this to '' for core transmission UI |
+| `UPLOAD_SLOTS_PER_TORRENT` | 14 | upload slots per torrent |
+| `WATCH_DIR` | /torrents | watch dir for .torrent files |
+| `WATCH_DIR_ENABLED` | false | enable watch dir? |
