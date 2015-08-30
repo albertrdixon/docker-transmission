@@ -2,8 +2,8 @@ FROM alpine:3.2
 MAINTAINER Albert Dixon <albert.dixon@schange.com>
 
 RUN echo "http://dl-4.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
-    && echo "http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
-    && apk update
+    && echo "http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+RUN apk update
 RUN apk add \
       bash \
       ca-certificates \
