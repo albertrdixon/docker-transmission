@@ -16,7 +16,7 @@
     "download-queue-enabled": {{ .Env.DOWNLOAD_QUEUE_ENABLED }},
     "download-queue-size": {{ .Env.DOWNLOAD_QUEUE_SIZE }},
     "encryption": 1,
-    "idle-seeding-limit": 30,
+    "idle-seeding-limit": {{ .Env.IDLE_SEEDING_LIMIT }},
     "idle-seeding-limit-enabled": true,
     "incomplete-dir": "{{ .Env.TRANSMISSION_HOME }}/downloads",
     "incomplete-dir-enabled": true,

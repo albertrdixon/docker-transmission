@@ -48,6 +48,7 @@ ENV DOWNLOAD_DIR                /downloads
 ENV DOWNLOAD_QUEUE_ENABLED      true
 ENV DOWNLOAD_QUEUE_SIZE         3
 ENV ENABLE_CLEANER              true
+ENV IDLE_SEEDING_LIMIT          10
 ENV MESSAGE_LEVEL               1
 ENV OPEN_FILE_LIMIT             32768
 ENV OPENVPN_GATEWAY             ca-toronto.privateinternetaccess.com
