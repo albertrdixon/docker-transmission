@@ -29,10 +29,10 @@ ADD scripts/*   /usr/local/bin/
 RUN chmod a+rx  /usr/local/bin/* \
     && mkdir -p /etc/pia_transmission_monitor \
         /transmission/openvpn \
-        /transmission/web
+        /web
 
 ADD https://github.com/ronggang/transmission-web-control/raw/master/release/transmission-control-full.tar.gz /web.tgz
-RUN tar xzf /web.tgz -C /transmission/web --strip-components=1 \
+RUN tar xzf /web.tgz -C /web --strip-components=1 \
     && rm -f /web.tgz
 
 WORKDIR /
@@ -79,7 +79,7 @@ ENV SPEED_LIMIT_UP_ENABLED      true
 ENV SUPERVISOR_LOG_LEVEL        INFO
 ENV TRANSMISSION_HOME           /transmission
 ENV TRANSMISSION_LOG            /dev/stderr
-ENV TRANSMISSION_WEB_HOME       /transmission/web
+ENV TRANSMISSION_WEB_HOME       /web
 ENV UPLOAD_SLOTS_PER_TORRENT    14
 ENV WATCH_DIR                   /torrents
 ENV WATCH_DIR_ENABLED           false
