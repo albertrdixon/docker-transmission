@@ -1,7 +1,10 @@
 #!/usr/bin/env python
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 import transmissionrpc
 import logging
-import sys
 from getopt import getopt
 from threading import Thread, Event
 from time import sleep
