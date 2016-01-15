@@ -2,16 +2,17 @@
 set -eo pipefail
 trap "exit 0" 2 15
 
-[ -d "$DOWNLOAD_DIR" ] || mkdir -p "$DOWNLOAD_DIR"
-[ -d "$WATCH_DIR" ] || mkdir -p "$WATCH_DIR"
+echo "--> Checking transmission directories ..."
+[ -d "$DOWNLOAD_DIR" ] || mkdir -vp "$DOWNLOAD_DIR"
+[ -d "$WATCH_DIR" ] || mkdir -vp "$WATCH_DIR"
 for d in torrents resume blocklists downloads
 do
-  [ -d "$TRANSMISSION_HOME/$d" ] || mkdir -p "$TRANSMISSION_HOME/$d"
+  [ -d "$TRANSMISSION_HOME/$d" ] || mkdir -vp "$TRANSMISSION_HOME/$d"
 done
 
+echo "--> Checking transmission and openvpn configs ..."
 [ -f "$TRANSMISSION_HOME/settings.json" ] || cp -v /settings.json "$TRANSMISSION_HOME/settings.json"
 [ -f "$OPENVPN_HOME/pia.ovpn" ] || cp -v /pia.ovpn "$OPENVPN_HOME/pia.ovpn"
 
-[ -n "$WEB" ] && export TRANSMISSION_WEB_HOME="$WEB"
 exec -a "supervisord" "supervisord" "-c" "/etc/supervisord.conf"
 exit 0
