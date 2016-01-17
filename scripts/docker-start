@@ -1,6 +1,5 @@
 #!/bin/bash
 set -eo pipefail
-trap "exit 0" 2 15
 
 echo "--> Checking transmission directories ..."
 [ -d "$DOWNLOAD_DIR" ] || mkdir -vp "$DOWNLOAD_DIR"
@@ -14,5 +13,22 @@ echo "--> Checking transmission and openvpn configs ..."
 [ -f "$TRANSMISSION_HOME/settings.json" ] || cp -v /settings.json "$TRANSMISSION_HOME/settings.json"
 [ -f "$OPENVPN_HOME/pia.ovpn" ] || cp -v /pia.ovpn "$OPENVPN_HOME/pia.ovpn"
 
-exec -a "supervisord" "supervisord" "-c" "/etc/supervisord.conf"
-exit 0
+echo "--> Checking transmission user ..."
+if ! id transmission >/dev/null 2>&1; then
+  echo "--> Creating transmission user and group ..."
+  addgroup -g ${TRANSMISSION_GID} transmission || true
+  adduser -s /sbin/nologin -D -H -G transmission -u ${TRANSMISSION_UID} transmission
+fi
+
+echo "--> Change ownership to transmission ..."
+chown -Rc transmission:transmission \
+  "$TRANSMISSION_HOME" \
+  "$TRANSMISSION_WEB_HOME" \
+  "$OPENVPN_HOME" \
+  "$DOWNLOAD_DIR" \
+  "$WATCH_DIR" \
+
+echo "--> Booting supervisor ..."
+cmd=( supervisord -c /etc/supervisord.conf )
+# cmd=( transmon --log-level debug --config /transmon.yml )
+exec ${cmd[*]}

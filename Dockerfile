@@ -1,11 +1,12 @@
 FROM alpine:3.3
 MAINTAINER Albert Dixon <albert.dixon@schange.com>
 
-ENTRYPOINT ["docker-entry"]
+ENTRYPOINT ["tini", "-g","--", "docker-entry"]
 CMD ["docker-start"]
 EXPOSE 9091
 
 ADD https://github.com/albertrdixon/tmplnator/releases/download/v2.2.1/t2-linux.tgz /t2.tgz
+ADD https://github.com/albertrdixon/transmon/releases/download/v0.1.0/transmon-linux.tgz /transmon.tgz
 ADD https://github.com/ronggang/transmission-web-control/raw/master/release/transmission-control-full.tar.gz /web.tgz
 ADD https://www.privateinternetaccess.com/openvpn/openvpn.zip /
 
@@ -26,6 +27,7 @@ RUN echo "http://dl-4.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories
       python \
       supervisor \
       tar \
+      tini \
       transmission-cli \
       transmission-daemon \
       unzip \
@@ -37,12 +39,14 @@ RUN echo "http://dl-4.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories
       /web \
     && pip install -U transmissionrpc>=0.11 \
     && tar xvzf /t2.tgz -C /bin \
+    && tar xvzf /transmon.tgz -C /bin \
     && tar xvzf /web.tgz -C /web --strip-components=1 \
     && unzip -Lj /openvpn.zip ca.crt crl.pem -d /openvpn \
     && mv -vf /openvpn/ca.crt /certs/pia.crt \
     && mv -vf /openvpn/crl.pem /certs/pia.pem \
     && chmod a+rx /usr/local/bin/* \
-    && rm -rvf /openvpn* /t2.tgz /web.tgz
+    && deluser transmission \
+    && rm -rvf /openvpn* /*.tgz
 
 ENV CACHE_SIZE=50 \
     CLEAN_FREQUENCY=1800 \
@@ -84,6 +88,8 @@ ENV CACHE_SIZE=50 \
     TRANSMISSION_HOME=/transmission \
     TRANSMISSION_LOG=/dev/stderr \
     TRANSMISSION_WEB_HOME=/web \
+    TRANSMISSION_UID=7000 \
+    TRANSMISSION_GID=7000 \
     UPLOAD_SLOTS_PER_TORRENT=14 \
     WATCH_DIR=/torrents \
     WATCH_DIR_ENABLED=false

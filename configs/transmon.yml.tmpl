@@ -1,0 +1,21 @@
+timeout: 2m
+
+pia:
+  username: {{ .Env.PIA_USER }}
+  password: {{ .Env.PIA_PASS }}
+  client_id: {{ replace (uuid) "-" "" -1 }}
+
+transmission:
+  config: {{ .Env.TRANSMISSION_HOME }}/settings.json
+  command: transmission-daemon -f -r 0.0.0.0 --config-dir {{ .Env.TRANSMISSION_HOME }}
+  uid: 7000
+  gid: 7000
+  rpc:
+    username: {{ .Env.RPC_USERNAME }}
+    password: {{ .Env.RPC_PASSWORD }}
+    url: http://127.0.0.1:{{ .Env.RPC_PORT }}
+
+openvpn:
+  command: openvpn --cd {{ .Env.OPENVPN_HOME }} --config {{ .Env.OPENVPN_HOME }}/pia.ovpn --mute-replay-warnings
+  device: tun0
+{{ path "/" }}
