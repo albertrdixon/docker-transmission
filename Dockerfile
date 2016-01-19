@@ -49,6 +49,7 @@ RUN chmod +rx /sbin/entry /sbin/start /scripts/completed.sh
 
 ENV CACHE_SIZE=50 \
     CLEAN_FREQUENCY=1800 \
+    COMPLETED_SCRIPT=/scripts/completed.sh \
     COMPLETED_SCRIPT_ENABLED=false \
     CONGESTION=lp \
     DOWNLOAD_DIR=/downloads \
