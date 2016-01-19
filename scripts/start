@@ -1,0 +1,36 @@
+#!/bin/bash
+set -eo pipefail
+
+echo "--> Checking transmission directories ..."
+[ -d "$DOWNLOAD_DIR" ] || mkdir -vp "$DOWNLOAD_DIR"
+[ -d "$WATCH_DIR" ] || mkdir -vp "$WATCH_DIR"
+for d in torrents resume blocklists downloads
+do
+  [ -d "$TRANSMISSION_HOME/$d" ] || mkdir -vp "$TRANSMISSION_HOME/$d"
+done
+
+echo "--> Checking transmission and openvpn configs ..."
+[ -f "$TRANSMISSION_HOME/settings.json" ] || cp -v /settings.json "$TRANSMISSION_HOME/settings.json"
+[ -f "$OPENVPN_HOME/pia.ovpn" ] || cp -v /pia.ovpn "$OPENVPN_HOME/pia.ovpn"
+
+echo "--> Checking transmission user ..."
+if ! id transmission >/dev/null 2>&1; then
+  echo "--> Creating transmission user and group ..."
+  addgroup -g ${TRANSMISSION_GID} transmission || true
+  adduser -s /sbin/nologin -D -H -G transmission -u ${TRANSMISSION_UID} transmission
+fi
+
+echo "--> Change ownership to transmission ..."
+chown -Rc transmission:transmission \
+  "$TRANSMISSION_HOME" \
+  "$TRANSMISSION_WEB_HOME" \
+  "$OPENVPN_HOME" \
+  "$DOWNLOAD_DIR" \
+  "$WATCH_DIR" \
+
+cmd=( transmon --log-level $TRANSMON_LOG_LEVEL --config /transmon.yml )
+if [ "$ENABLE_CLEANER" = "true" ]; then
+  cmd+=( --cleaner )
+fi
+echo "--> cmd: ${cmd[*]}"
+exec ${cmd[*]}
