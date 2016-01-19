@@ -28,7 +28,9 @@ chown -Rc transmission:transmission \
   "$DOWNLOAD_DIR" \
   "$WATCH_DIR" \
 
-echo "--> Booting supervisor ..."
-cmd=( supervisord -c /etc/supervisord.conf )
-# cmd=( transmon --log-level debug --config /transmon.yml )
+cmd=( transmon --log-level $TRANSMON_LOG_LEVEL --config /transmon.yml )
+if [ "$ENABLE_CLEANER" = "true" ]; then
+  cmd+=( --cleaner )
+fi
+echo "--> cmd: ${cmd[*]}"
 exec ${cmd[*]}

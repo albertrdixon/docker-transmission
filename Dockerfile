@@ -1,18 +1,17 @@
 FROM alpine:3.3
 MAINTAINER Albert Dixon <albert.dixon@schange.com>
 
-ENTRYPOINT ["tini", "-g","--", "docker-entry"]
-CMD ["docker-start"]
+ENTRYPOINT ["tini", "-g","--", "/sbin/entry"]
+CMD ["/sbin/start"]
 EXPOSE 9091
 
-ADD https://github.com/albertrdixon/tmplnator/releases/download/v2.2.1/t2-linux.tgz /t2.tgz
-ADD https://github.com/albertrdixon/transmon/releases/download/v0.1.0/transmon-linux.tgz /transmon.tgz
+ENV T2_VER=v2.2.1 \
+    TRANSMON_VER=v0.2.0
+
+ADD https://github.com/albertrdixon/tmplnator/releases/download/${T2_VER}/t2-linux.tgz /t2.tgz
+ADD https://github.com/albertrdixon/transmon/releases/download/${TRANSMON_VER}/transmon-linux.tgz /transmon.tgz
 ADD https://github.com/ronggang/transmission-web-control/raw/master/release/transmission-control-full.tar.gz /web.tgz
 ADD https://www.privateinternetaccess.com/openvpn/openvpn.zip /
-
-COPY bashrc      /root/.bashrc
-COPY configs     /templates
-COPY scripts/*   /usr/local/bin/
 
 WORKDIR /
 RUN echo "http://dl-4.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
@@ -22,13 +21,8 @@ RUN echo "http://dl-4.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories
       bash \
       ca-certificates \
       openvpn \
-      py-pip \
-      py-six \
-      python \
-      supervisor \
       tar \
       tini \
-      transmission-cli \
       transmission-daemon \
       unzip \
     && mkdir -vp \
@@ -37,16 +31,21 @@ RUN echo "http://dl-4.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories
       /openvpn \
       /transmission/openvpn \
       /web \
-    && pip install -U transmissionrpc>=0.11 \
     && tar xvzf /t2.tgz -C /bin \
     && tar xvzf /transmon.tgz -C /bin \
     && tar xvzf /web.tgz -C /web --strip-components=1 \
     && unzip -Lj /openvpn.zip ca.crt crl.pem -d /openvpn \
     && mv -vf /openvpn/ca.crt /certs/pia.crt \
     && mv -vf /openvpn/crl.pem /certs/pia.pem \
-    && chmod a+rx /usr/local/bin/* \
     && deluser transmission \
     && rm -rvf /openvpn* /*.tgz
+
+COPY bashrc      /root/.bashrc
+COPY configs     /templates
+
+COPY scripts/completed.sh /scripts/completed.sh
+COPY ["scripts/entry", "scripts/start", "/sbin/"]
+RUN chmod +rx /sbin/entry /sbin/start /scripts/completed.sh
 
 ENV CACHE_SIZE=50 \
     CLEAN_FREQUENCY=1800 \
@@ -86,10 +85,11 @@ ENV CACHE_SIZE=50 \
     SPEED_LIMIT_UP_ENABLED=true \
     SUPERVISOR_LOG_LEVEL=INFO \
     TRANSMISSION_HOME=/transmission \
-    TRANSMISSION_LOG=/dev/stderr \
+    TRANSMISSION_LOG_LEVEL=info \
     TRANSMISSION_WEB_HOME=/web \
     TRANSMISSION_UID=7000 \
     TRANSMISSION_GID=7000 \
+    TRANSMON_LOG_LEVEL=info \
     UPLOAD_SLOTS_PER_TORRENT=14 \
     WATCH_DIR=/torrents \
     WATCH_DIR_ENABLED=false
