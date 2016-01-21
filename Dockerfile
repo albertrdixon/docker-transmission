@@ -6,7 +6,7 @@ CMD ["/sbin/start"]
 EXPOSE 9091
 
 ENV T2_VER=v2.2.1 \
-    TRANSMON_VER=v0.2.0
+    TRANSMON_VER=v0.2.1
 
 ADD https://github.com/albertrdixon/tmplnator/releases/download/${T2_VER}/t2-linux.tgz /t2.tgz
 ADD https://github.com/albertrdixon/transmon/releases/download/${TRANSMON_VER}/transmon-linux.tgz /transmon.tgz
