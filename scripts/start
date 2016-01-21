@@ -10,8 +10,12 @@ do
 done
 
 echo "--> Checking transmission and openvpn configs ..."
-[ -f "$TRANSMISSION_HOME/settings.json" ] || cp -v /settings.json "$TRANSMISSION_HOME/settings.json"
-[ -f "$OPENVPN_HOME/pia.ovpn" ] || cp -v /pia.ovpn "$OPENVPN_HOME/pia.ovpn"
+if [ -f "$TRANSMISSION_HOME/settings.json" ] || [ "$OVERWRITE" = "true" ]; then
+  mv -fv /settings.json "$TRANSMISSION_HOME/settings.json"
+fi
+if [ -f "$OPENVPN_HOME/pia.ovpn" ] || [ "$OVERWRITE" = "true" ]; then
+  mv -fv /pia.ovpn "$OPENVPN_HOME/pia.ovpn"
+fi
 
 echo "--> Checking transmission user ..."
 if ! id transmission >/dev/null 2>&1; then
