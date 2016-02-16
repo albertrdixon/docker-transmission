@@ -6,7 +6,7 @@ CMD ["/sbin/start"]
 EXPOSE 9091
 
 ENV T2_VER=v2.2.1 \
-    TRANSMON_VER=v0.2.1
+    TRANSMON_VER=v0.2.2
 
 ADD https://github.com/albertrdixon/tmplnator/releases/download/${T2_VER}/t2-linux.tgz /t2.tgz
 ADD https://github.com/albertrdixon/transmon/releases/download/${TRANSMON_VER}/transmon-linux.tgz /transmon.tgz
@@ -16,6 +16,7 @@ ADD https://www.privateinternetaccess.com/openvpn/openvpn.zip /
 WORKDIR /
 RUN echo "http://dl-4.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
     && echo "http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
+    && echo "http://dl-1.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
     && apk update \
     && apk add \
       bash \
@@ -55,7 +56,6 @@ ENV CACHE_SIZE=50 \
     DOWNLOAD_DIR=/downloads \
     DOWNLOAD_QUEUE_ENABLED=true \
     DOWNLOAD_QUEUE_SIZE=3 \
-    ENABLE_CLEANER=true \
     IDLE_SEEDING_LIMIT=10 \
     MESSAGE_LEVEL=1 \
     OPEN_FILE_LIMIT=32768 \

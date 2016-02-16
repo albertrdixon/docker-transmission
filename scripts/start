@@ -33,8 +33,5 @@ chown -Rc transmission:transmission \
   "$WATCH_DIR" \
 
 cmd=( transmon --log-level $TRANSMON_LOG_LEVEL --config /transmon.yml )
-if [ "$ENABLE_CLEANER" = "true" ]; then
-  cmd+=( --cleaner )
-fi
 echo "--> cmd: ${cmd[*]}"
 exec ${cmd[*]}
