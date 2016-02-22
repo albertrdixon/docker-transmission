@@ -17,6 +17,15 @@ if [ -f "$OPENVPN_HOME/pia.ovpn" ] || [ "$OVERWRITE" = "true" ]; then
   mv -fv /pia.ovpn "$OPENVPN_HOME/pia.ovpn"
 fi
 
+echo "--> Attempting to get latest PIA certs ..."
+if wget -q --show-progress --progress=bar:force:noscroll -O /openvpn.zip https://www.privateinternetaccess.com/openvpn/openvpn.zip
+then
+  unzip -Lj /openvpn.zip ca.crt crl.pem -d /openvpn
+  mv -vf /openvpn/ca.crt /certs/pia.crt
+  mv -vf /openvpn/crl.pem /certs/pia.pem
+  rm -rvf /openvpn.zip
+fi
+
 echo "--> Checking transmission user ..."
 if ! id transmission >/dev/null 2>&1; then
   echo "--> Creating transmission user and group ..."
