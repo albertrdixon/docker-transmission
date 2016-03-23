@@ -1,6 +1,6 @@
 timeout: 2m
 cleaner:
-  enabled: true
+  enabled: {{ .Env.CLEANER_ENABLED }}
   interval: 1h
 
 pia:
