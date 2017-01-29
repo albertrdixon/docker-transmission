@@ -9,13 +9,4 @@ echo "**** Starting Transmission (https://www.transmissionbt.com/) container. En
 # Generate the transmission monitor config from template and env vars
 t2 /templates
 
-echo "--> Checking special tun file ..."
-[ -d /dev/net ] || mkdir -vp /dev/net
-[ -c /dev/net/tun ] || {
-  echo "--> Creating /dev/net/tun ..."
-  mknod /dev/net/tun c 10 200
-  chmod a+rw /dev/net/tun
-}
-
 exec $*
-exit 0

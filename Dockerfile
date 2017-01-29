@@ -1,26 +1,18 @@
-FROM alpine:3.3
+FROM alpine:3.5
 MAINTAINER Albert Dixon <albert.dixon@schange.com>
 
-ENTRYPOINT ["tini", "-g","--", "/sbin/entry"]
+ENTRYPOINT ["/sbin/tini", "-g","--", "/sbin/entry"]
 CMD ["/sbin/start"]
 EXPOSE 9091
 
 ENV T2_VER=v2.2.1 \
     TRANSMON_VER=v0.2.3
 
-ADD https://github.com/albertrdixon/tmplnator/releases/download/${T2_VER}/t2-linux.tgz /t2.tgz
-ADD https://github.com/albertrdixon/transmon/releases/download/${TRANSMON_VER}/transmon-linux.tgz /transmon.tgz
-ADD https://github.com/ronggang/transmission-web-control/raw/master/release/transmission-control-full.tar.gz /web.tgz
-ADD https://www.privateinternetaccess.com/openvpn/openvpn.zip /
-
 WORKDIR /
-RUN echo "http://dl-4.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
-    && echo "http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
-    && echo "http://dl-1.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
-    && apk update \
-    && apk add \
+RUN apk add --update --no-cache \
       bash \
       ca-certificates \
+      curl \
       openvpn \
       tar \
       tini \
@@ -32,12 +24,16 @@ RUN echo "http://dl-4.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories
       /openvpn \
       /transmission/openvpn \
       /web \
+    && curl -L -o t2.tgz https://github.com/albertrdixon/tmplnator/releases/download/${T2_VER}/t2-linux.tgz \
+    && curl -L -o transmon.tgz https://github.com/albertrdixon/transmon/releases/download/${TRANSMON_VER}/transmon-linux.tgz \
+    && curl -L -o web.tgz https://github.com/balonik/transmission-web-control/raw/master/release/transmission-control-full.tar.gz \
+    && curl -kL -o openvpn.zip https://www.privateinternetaccess.com/openvpn/openvpn.zip \
     && tar xvzf /t2.tgz -C /bin \
     && tar xvzf /transmon.tgz -C /bin \
-    && tar xvzf /web.tgz -C /web --strip-components=1 \
-    && unzip -Lj /openvpn.zip ca.crt crl.pem -d /openvpn \
-    && mv -vf /openvpn/ca.crt /certs/pia.crt \
-    && mv -vf /openvpn/crl.pem /certs/pia.pem \
+    && tar xvzf /web.tgz -C /web \
+    && unzip -Lj /openvpn.zip ca.*.crt crl.*.pem -d /openvpn \
+    && mv -vf /openvpn/ca.*.crt /certs/pia.crt \
+    && mv -vf /openvpn/crl.*.pem /certs/pia.pem \
     && deluser transmission \
     && rm -rvf /openvpn* /*.tgz
 
@@ -60,7 +56,7 @@ ENV CACHE_SIZE=50 \
     MESSAGE_LEVEL=1 \
     OPEN_FILE_LIMIT=32768 \
     OPENVPN_GATEWAY=ca-toronto.privateinternetaccess.com \
-    OPENVPN_GATEWAY_PORT=1194 \
+    OPENVPN_GATEWAY_PORT=1198 \
     OPENVPN_HOME=/transmission/openvpn \
     OPENVPN_LOG=/dev/stderr \
     OPENVPN_MUTE=20 \

@@ -1,5 +1,5 @@
 client
-dev tun
+dev tun0
 proto {{ .Env.OPENVPN_PROTO }}
 remote {{ .Env.OPENVPN_GATEWAY }} {{ .Env.OPENVPN_GATEWAY_PORT }}
 resolv-retry infinite
@@ -8,6 +8,8 @@ persist-key
 persist-tun
 ca /certs/pia.crt
 tls-client
+cipher aes-128-cbc
+auth sha1
 remote-cert-tls server
 auth-user-pass /pia.cred
 comp-lzo
