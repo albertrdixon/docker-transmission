@@ -4,6 +4,7 @@ set -eo pipefail
 echo "--> Checking transmission directories ..."
 [ -d "$DOWNLOAD_DIR" ] || mkdir -vp "$DOWNLOAD_DIR"
 [ -d "$WATCH_DIR" ] || mkdir -vp "$WATCH_DIR"
+[ -d "$OPENVPN_HOME" ] || mkdir -vp "$OPENVPN_HOME"
 for d in torrents resume blocklists downloads
 do
   [ -d "$TRANSMISSION_HOME/$d" ] || mkdir -vp "$TRANSMISSION_HOME/$d"
