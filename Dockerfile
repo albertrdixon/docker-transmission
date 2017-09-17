@@ -1,5 +1,4 @@
 FROM alpine:3.5
-MAINTAINER Albert Dixon <albert.dixon@schange.com>
 
 ENTRYPOINT ["/sbin/tini", "-g","--", "/sbin/entry"]
 CMD ["/sbin/start"]
