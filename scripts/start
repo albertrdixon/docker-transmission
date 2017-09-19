@@ -1,5 +1,4 @@
-#!/bin/bash
-set -eo pipefail
+#!/bin/bash -ex
 
 echo "--> Checking transmission directories ..."
 [ -d "$DOWNLOAD_DIR" ] || mkdir -vp "$DOWNLOAD_DIR"
