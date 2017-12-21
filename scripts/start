@@ -50,12 +50,13 @@ chown -Rc transmission:transmission \
 "$WATCH_DIR" \
 
 if [[ -z "$NO_VPN" ]]; then
+  echo "--> Creating tun device ..."
   test -d /dev/net || mkdir -vp /dev/net
   test -c /dev/net/tun || mknod /dev/net/tun c 10 200
   openvpn --mktun --dev tun0
 fi
 
-cmd=( transmon --log-level $TRANSMON_LOG_LEVEL --config /transmon.yml )
+cmd=( transmon --log-level="$TRANSMON_LOG_LEVEL" --config=/transmon.yml )
 [[ -n "$COMMAND" ]] && cmd=($COMMAND)
 echo "--> cmd: ${cmd[*]}"
 exec ${cmd[*]}

@@ -1,4 +1,4 @@
-FROM alpine:3.5
+FROM alpine:3.6
 
 ENTRYPOINT ["/sbin/tini", "-g","--", "/sbin/entry"]
 CMD ["/sbin/start"]
