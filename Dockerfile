@@ -1,11 +1,12 @@
-FROM alpine:3.6
+FROM alpine:3.7
 
 ENTRYPOINT ["/sbin/tini", "-g","--", "/sbin/entry"]
 CMD ["/sbin/start"]
 EXPOSE 9091
 
 ENV T2_VER=v2.2.1 \
-    TRANSMON_VER=v0.2.3
+    TRANSMON_VER=v0.2.3 \
+    WEB_CONTROL_VERSION=v1.6.0-alpha
 
 WORKDIR /
 RUN apk add --update --no-cache \
@@ -25,7 +26,7 @@ RUN apk add --update --no-cache \
       /web \
     && curl -L -o t2.tgz https://github.com/albertrdixon/tmplnator/releases/download/${T2_VER}/t2-linux.tgz \
     && curl -L -o transmon.tgz https://github.com/albertrdixon/transmon/releases/download/${TRANSMON_VER}/transmon-linux.tgz \
-    && curl -L -o web.tgz https://github.com/balonik/transmission-web-control/raw/master/release/transmission-control-full.tar.gz \
+    && curl -L -o web.tgz https://github.com/ronggang/transmission-web-control/archive/${WEB_CONTROL_VERSION}.tar.gz \
     && curl -kL -o openvpn.zip https://www.privateinternetaccess.com/openvpn/openvpn.zip \
     && tar xvzf /t2.tgz -C /bin \
     && tar xvzf /transmon.tgz -C /bin \
