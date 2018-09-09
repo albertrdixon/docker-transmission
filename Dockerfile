@@ -1,4 +1,4 @@
-FROM alpine:3.7
+FROM alpine:3.8
 
 ENTRYPOINT ["/sbin/tini", "-g","--", "/sbin/entry"]
 CMD ["/sbin/start"]
@@ -6,13 +6,14 @@ EXPOSE 9091
 
 ENV T2_VER=v2.2.1 \
     TRANSMON_VER=v0.2.3 \
-    WEB_CONTROL_VERSION=1.6.0-alpha
+    WEB_CONTROL_VERSION=1.6.0-beta2
 
 WORKDIR /
 RUN apk add --update --no-cache \
       bash \
       ca-certificates \
       curl \
+      openssl \
       openvpn \
       tar \
       tini \
